@@ -66,7 +66,7 @@ class RecyclerViewHomeAdapter(val data: List<Restaurant>) :
         val image = view.findViewById(R.id.mainPic) as ImageView
         val rating = view.findViewById(R.id.ratingTxt) as TextView
         val reviewNb = view.findViewById(R.id.revNumTxt) as TextView
-        var magnitude = 0.0
+        var latitude = 0.0
         var longitude = 0.0
     }
 }

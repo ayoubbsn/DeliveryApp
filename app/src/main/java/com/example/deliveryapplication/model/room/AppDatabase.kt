@@ -1,4 +1,4 @@
-package com.example.deliveryapplication.model
+package com.example.deliveryapplication.model.room
 
 
 import android.content.Context
@@ -6,7 +6,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.Room
 
-@Database(entities = [Card::class,MenuData::class,MenuCard::class], version = 1)
+@Database(entities = [Card::class, MenuData::class, MenuCard::class], version = 2)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun cardDao() : CardDao
     abstract fun menuCardDao() : MenuCardDao
@@ -19,7 +19,7 @@ abstract class AppDatabase : RoomDatabase() {
                 INSTANCE =
                     Room.databaseBuilder(
                         context, AppDatabase::class.java,
-                        "users_db"
+                        "AppDatabase"
                     ).allowMainThreadQueries().build()
             }
             return INSTANCE

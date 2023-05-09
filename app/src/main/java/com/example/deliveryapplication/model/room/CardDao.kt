@@ -1,11 +1,13 @@
-package com.example.deliveryapplication.model
+package com.example.deliveryapplication.model.room
 
 import androidx.room.*
-import java.sql.Date
 
 @Dao
 interface CardDao {
 
+
+    @Query("SELECT MAX(cardId) FROM cards")
+    fun getLastSeqId() : Long
 
     @Insert
     fun addCards(vararg Cards: Card)

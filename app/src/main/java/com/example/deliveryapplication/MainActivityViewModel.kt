@@ -1,8 +1,8 @@
 package com.example.deliveryapplication
 
 import androidx.lifecycle.ViewModel
-import com.example.deliveryapplication.model.MenuItem
-import com.example.deliveryapplication.model.Restaurant
+import com.example.deliveryapplication.model.entity.MenuItem
+import com.example.deliveryapplication.model.entity.Restaurant
 
 class MainActivityViewModel : ViewModel() {
     var restaurantList = mutableListOf<Restaurant>(
@@ -14,7 +14,7 @@ class MainActivityViewModel : ViewModel() {
                     Turkish restaurant.
                 """.trimIndent(),
             R.drawable.burger,
-            250.0,
+            250,
             4.5,
             34
         ),
@@ -26,7 +26,7 @@ class MainActivityViewModel : ViewModel() {
                     Turkish restaurant.
                 """.trimIndent(),
             R.drawable.burger,
-            250.0,
+            250,
             4.5,
             34
         ),
@@ -38,7 +38,7 @@ class MainActivityViewModel : ViewModel() {
                     Turkish restaurant.
                 """.trimIndent(),
             R.drawable.burger,
-            250.0,
+            250,
             4.5,
             34
         ),
@@ -50,7 +50,7 @@ class MainActivityViewModel : ViewModel() {
                     Turkish restaurant.
                 """.trimIndent(),
             R.drawable.burger,
-            250.0,
+            250,
             4.5,
             34
         )

@@ -7,9 +7,9 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import android.content.Context
 import androidx.core.content.edit
-import com.example.deliveryapplication.model.AppDatabase
-import com.example.deliveryapplication.model.MenuData
-import com.example.deliveryapplication.model.MenuItem
+import androidx.room.Room
+import com.example.deliveryapplication.model.room.AppDatabase
+import kotlinx.coroutines.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -18,17 +18,25 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
-        val navHostFragment_ = supportFragmentManager.findFragmentById(R.id.supFragContainer) as NavHostFragment
+        val navHostFragment_ =
+            supportFragmentManager.findFragmentById(R.id.supFragContainer) as NavHostFragment
         val navController_ = navHostFragment_.navController
         bottomNavigationView.setupWithNavController(navController_)
 
-        val pref = getSharedPreferences("Connect",Context.MODE_PRIVATE) ?: return
-        pref.edit{
+        val pref = getSharedPreferences("Connect", Context.MODE_PRIVATE) ?: return
+        pref.edit {
             putBoolean("connected", true)
         }
 
-        val appDatabase = AppDatabase.buildDatabase(this)
-        println("data :" + appDatabase?.menuDataDao()?.getMenuDataItemsAll())
+        val viewModelScope = CoroutineScope(Dispatchers.Main)
+
+        viewModelScope.launch(Dispatchers.IO) {
+            val db =
+                Room.databaseBuilder(applicationContext, AppDatabase::class.java, "AppDatabase")
+                    .fallbackToDestructiveMigration()
+                    .build()
+            println("data :" + db.menuDataDao().getMenuDataItemsAll())
+        }
 
     }
 

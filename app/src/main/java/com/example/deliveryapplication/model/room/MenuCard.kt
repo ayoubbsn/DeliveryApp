@@ -1,4 +1,4 @@
-package com.example.deliveryapplication.model
+package com.example.deliveryapplication.model.room
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
@@ -6,11 +6,11 @@ import androidx.room.PrimaryKey
 
 
 @Entity(tableName = "Menucard" , foreignKeys = [
-        ForeignKey(entity=MenuData::class,
+        ForeignKey(entity= MenuData::class,
         parentColumns=["menuItemId"],childColumns = ["menuItem_Id"],
         onUpdate = ForeignKey.CASCADE,
         onDelete = ForeignKey.CASCADE ),
-        ForeignKey(entity=Card::class,
+        ForeignKey(entity= Card::class,
         parentColumns=["cardId"],childColumns = ["card_id"],
         onUpdate = ForeignKey.CASCADE,
         onDelete = ForeignKey.CASCADE )

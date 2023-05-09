@@ -12,12 +12,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.deliveryapplication.model.AppDatabase
-import com.example.deliveryapplication.model.Card
-import com.example.deliveryapplication.model.MenuCard
-import com.example.deliveryapplication.model.MenuItem
+import com.example.deliveryapplication.model.room.AppDatabase
+import com.example.deliveryapplication.model.room.Card
+import com.example.deliveryapplication.model.room.MenuCard
+import com.example.deliveryapplication.model.entity.MenuItem
 import java.time.LocalDate
-import java.util.Date
 
 class menuFragment : Fragment() {
 
@@ -72,12 +71,15 @@ class menuFragment : Fragment() {
             override fun onItemSelected(selectedItems: List<MenuItem>) {
                 val currentDate = LocalDate.now().toString()
                 val appDatabase = AppDatabase.buildDatabase(requireActivity())
-                appDatabase?.cardDao()?.addCards(Card(1,currentDate))
-                var listToBeInsterted = mutableListOf<MenuCard>()
+                val cardDao = appDatabase?.cardDao()
+                val seqId = cardDao?.getLastSeqId()?.plus(1)?: 0L
+                cardDao?.addCards(Card(seqId,currentDate))
+                val listToBeInsterted = mutableListOf<MenuCard>()
                 for (item in selectedItems){
                     listToBeInsterted.add(MenuCard(item.id.toLong(),1))
                 }
-                appDatabase?.menuCardDao()?.addMenuDataCardItems()
+                //appDatabase?.menuCardDao()?.addMenuDataCardItems()
+                println(listToBeInsterted)
 
             }
         })

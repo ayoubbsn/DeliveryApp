@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.deliveryapplication.model.MenuItem
+import com.example.deliveryapplication.model.entity.MenuItem
 
 class RecyclerViewAdapterMenu(val data: List<MenuItem>) :
     RecyclerView.Adapter<RecyclerViewAdapterMenu.MyViewHolder>() {

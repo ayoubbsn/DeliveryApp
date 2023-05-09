@@ -1,4 +1,4 @@
-package com.example.deliveryapplication.model
+package com.example.deliveryapplication.model.entity
 
 data class MenuItem(
     val id:Int,

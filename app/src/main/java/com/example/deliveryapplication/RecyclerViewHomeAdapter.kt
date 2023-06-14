@@ -7,9 +7,12 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.deliveryapplication.model.entity.Restaurant
+import com.example.deliveryapplication.model.retrofit.RetrofitObject
+import com.example.deliveryapplication.model.retrofit.entity.Restaurants
 
-class RecyclerViewHomeAdapter(val data: List<Restaurant>) :
+class RecyclerViewHomeAdapter(var data: List<Restaurants>) :
     RecyclerView.Adapter<RecyclerViewHomeAdapter.MyViewHolder>() {
 
 
@@ -24,22 +27,21 @@ class RecyclerViewHomeAdapter(val data: List<Restaurant>) :
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         holder.apply {
-            nom.text = data[position].name
-            price.text = data[position].price.toInt().toString() + " DA"
+            name.text = data[position].name
+            price.text = "250 DA"
 
-            val avgRating = data[position].rating
-            if (avgRating >= 4) {
-                rating.text = "$avgRating superb"
-            } else if (avgRating > 3) {
-                rating.text = "$avgRating good"
-            } else if (avgRating > 2) {
-                rating.text = "$avgRating acceptable"
-            } else {
-                rating.text = "$avgRating bad"
-            }
+            // rating handling
+            val avgRating = 5.0
+            ratingHandler(avgRating,rating)
 
-            image.setImageResource(data[position].imageRes)
-            reviewNb.text = "(" +data[position].reviewNumber+")"
+
+            // logo handling
+            logo.setImageResource(R.drawable.burger)
+            Glide.with(holder.itemView)
+                .load(RetrofitObject.baseUrl+data[position].logo)
+                .into(logo)
+
+            reviewNb.text = "( 10 )"
 
             holder.itemView.setOnClickListener {
                 listener?.onItemClick(position)
@@ -58,15 +60,30 @@ class RecyclerViewHomeAdapter(val data: List<Restaurant>) :
     }
 
 
-
     class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-        val nom = view.findViewById(R.id.nameRes) as TextView
-        val price = view.findViewById(R.id.priceTxt) as TextView
-        val image = view.findViewById(R.id.mainPic) as ImageView
+        val name = view.findViewById(R.id.nameRes) as TextView
+        val price = view.findViewById(R.id.priceTxt) as TextView//
+        val logo = view.findViewById(R.id.mainPic) as ImageView
         val rating = view.findViewById(R.id.ratingTxt) as TextView
         val reviewNb = view.findViewById(R.id.revNumTxt) as TextView
-        var latitude = 0.0
-        var longitude = 0.0
+    }
+
+    fun updateRestaurants(restaurants: List<Restaurants>) {
+        this.data = restaurants
+        notifyDataSetChanged()
+    }
+
+    @SuppressLint("SetTextI18n")
+    fun ratingHandler(avgRating : Double, rating: TextView) {
+        if (avgRating >= 4) {
+            rating.text = "$avgRating superb"
+        } else if (avgRating > 3) {
+            rating.text = "$avgRating good"
+        } else if (avgRating > 2) {
+            rating.text = "$avgRating acceptable"
+        } else {
+            rating.text = "$avgRating bad"
+        }
     }
 }

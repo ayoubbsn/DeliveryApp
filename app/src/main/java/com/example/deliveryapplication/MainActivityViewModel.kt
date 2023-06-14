@@ -1,60 +1,21 @@
 package com.example.deliveryapplication
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.deliveryapplication.model.entity.MenuItem
 import com.example.deliveryapplication.model.entity.Restaurant
+import com.example.deliveryapplication.model.retrofit.RestaurantAPI
+import com.example.deliveryapplication.model.retrofit.RetrofitObject
+import com.example.deliveryapplication.model.retrofit.entity.Restaurants
+import kotlinx.coroutines.*
 
 class MainActivityViewModel : ViewModel() {
-    var restaurantList = mutableListOf<Restaurant>(
-        Restaurant(
-            "Burger Barn",
-            """
-                    Experience the exotic flavors of Turkey with our authentic dishes made with fresh
-                    and aromatic ingredients. Enjoy a delightful culinary journey at our
-                    Turkish restaurant.
-                """.trimIndent(),
-            R.drawable.burger,
-            250,
-            4.5,
-            34
-        ),
-        Restaurant(
-            "Burger Barn",
-            """
-                    Experience the exotic flavors of Turkey with our authentic dishes made with fresh
-                    and aromatic ingredients. Enjoy a delightful culinary journey at our
-                    Turkish restaurant.
-                """.trimIndent(),
-            R.drawable.burger,
-            250,
-            4.5,
-            34
-        ),
-        Restaurant(
-            "Burger Barn",
-            """
-                    Experience the exotic flavors of Turkey with our authentic dishes made with fresh
-                    and aromatic ingredients. Enjoy a delightful culinary journey at our
-                    Turkish restaurant.
-                """.trimIndent(),
-            R.drawable.burger,
-            250,
-            4.5,
-            34
-        ),
-        Restaurant(
-            "Burger Barn",
-            """
-                    Experience the exotic flavors of Turkey with our authentic dishes made with fresh
-                    and aromatic ingredients. Enjoy a delightful culinary journey at our
-                    Turkish restaurant.
-                """.trimIndent(),
-            R.drawable.burger,
-            250,
-            4.5,
-            34
-        )
-    )
+
+    private val restaurantAPI = RetrofitObject.getInstance().create(RestaurantAPI::class.java)
+    val restaurantsLiveData = MutableLiveData<List<Restaurants>>()
+
+
     var menuItems = mutableListOf<MenuItem>(
         MenuItem(1,"Classic Burger", "Beef patty with lettuce, tomato, onion, ketchup, mustard, and mayo", 500),
         MenuItem(2,"Bacon Cheeseburger", "Beef patty with bacon, cheddar cheese, lettuce, tomato, onion, ketchup, and mayo", 700),
@@ -67,4 +28,18 @@ class MainActivityViewModel : ViewModel() {
         MenuItem(9,"Chili Burger", "Beef patty with chili con carne, cheddar cheese, lettuce, tomato, and onion", 950),
         MenuItem(10,"Buffalo Chicken Burger", "Grilled chicken breast with buffalo sauce, blue cheese dressing, lettuce, tomato, and onion", 800)
     )
+
+
+
+    fun fetchRestaurants() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val response = restaurantAPI.getRestaurants()
+            if(response.isSuccessful && response.body() != null) {
+                restaurantsLiveData.postValue(response.body())
+            }
+        }
+    }
+
+
+
 }

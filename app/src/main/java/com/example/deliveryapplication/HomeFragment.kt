@@ -1,6 +1,7 @@
 package com.example.deliveryapplication
 
 import android.os.Bundle
+import android.text.Layout.Directions
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -15,7 +16,6 @@ import androidx.recyclerview.widget.RecyclerView
 class HomeFragment : Fragment() {
     private lateinit var viewModel: MainActivityViewModel
     private lateinit var adapter: RecyclerViewHomeAdapter
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -43,12 +43,18 @@ class HomeFragment : Fragment() {
 
         // click listener for redirection to the menu list
         adapter.setOnItemClickListener(object : RecyclerViewHomeAdapter.OnItemClickListener {
-            override fun onItemClick(position: Int) {
+            override fun onItemClick(position: Int , id : Int) {
                 // Navigate to second fragment using NavController
-                findNavController().navigate(R.id.action_homeFragment_to_menuFragment)
+                val bundle = Bundle().apply {
+                    putInt("restaurantId", id)
+                }
+
+                findNavController().navigate(R.id.action_homeFragment_to_menuFragment,bundle)
             }
         })
 
+
         return rootView
     }
+
 }

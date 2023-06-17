@@ -27,30 +27,30 @@ class RecyclerViewHomeAdapter(var data: List<Restaurants>) :
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         holder.apply {
+            id = data[position].id
             name.text = data[position].name
             price.text = "250 DA"
 
             // rating handling
             val avgRating = 5.0
-            ratingHandler(avgRating,rating)
+            ratingHandler(avgRating, rating)
 
 
             // logo handling
-            logo.setImageResource(R.drawable.burger)
             Glide.with(holder.itemView)
-                .load(RetrofitObject.baseUrl+data[position].logo)
+                .load(RetrofitObject.baseUrl + data[position].logo)
                 .into(logo)
 
             reviewNb.text = "( 10 )"
 
             holder.itemView.setOnClickListener {
-                listener?.onItemClick(position)
+                listener?.onItemClick(position, id)
             }
         }
     }
 
     interface OnItemClickListener {
-        fun onItemClick(position: Int)
+        fun onItemClick(position: Int, id: Int)
     }
 
     private var listener: OnItemClickListener? = null
@@ -62,11 +62,14 @@ class RecyclerViewHomeAdapter(var data: List<Restaurants>) :
 
     class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
+        var id: Int = 0
+
         val name = view.findViewById(R.id.nameRes) as TextView
         val price = view.findViewById(R.id.priceTxt) as TextView//
         val logo = view.findViewById(R.id.mainPic) as ImageView
         val rating = view.findViewById(R.id.ratingTxt) as TextView
         val reviewNb = view.findViewById(R.id.revNumTxt) as TextView
+
     }
 
     fun updateRestaurants(restaurants: List<Restaurants>) {
@@ -74,8 +77,9 @@ class RecyclerViewHomeAdapter(var data: List<Restaurants>) :
         notifyDataSetChanged()
     }
 
+    //just a logic class
     @SuppressLint("SetTextI18n")
-    fun ratingHandler(avgRating : Double, rating: TextView) {
+    fun ratingHandler(avgRating: Double, rating: TextView) {
         if (avgRating >= 4) {
             rating.text = "$avgRating superb"
         } else if (avgRating > 3) {

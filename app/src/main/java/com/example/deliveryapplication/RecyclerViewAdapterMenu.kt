@@ -1,5 +1,6 @@
 package com.example.deliveryapplication
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -7,11 +8,14 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.deliveryapplication.model.entity.MenuItem
+import com.example.deliveryapplication.model.retrofit.entity.MenuItems
+import com.example.deliveryapplication.model.retrofit.entity.Restaurants
 
-class RecyclerViewAdapterMenu(val data: List<MenuItem>) :
+
+class RecyclerViewAdapterMenu(var data: List<MenuItems>) :
     RecyclerView.Adapter<RecyclerViewAdapterMenu.MyViewHolder>() {
 
-    private val itemSelectionStates = Array(data.size) { ItemSelectionState() }
+    private var itemSelectionStates = Array(data.size) { ItemSelectionState() }
     private lateinit var selectionActionButton: Button
     private var itemSelectedListener: OnItemSelectedListener? = null
 
@@ -23,6 +27,14 @@ class RecyclerViewAdapterMenu(val data: List<MenuItem>) :
         )
     }
 
+    fun updateMenuItems(menuItems: List<MenuItems>) {
+        this.data = menuItems
+        this.itemSelectionStates = Array(data.size) { ItemSelectionState() }
+        notifyDataSetChanged()
+    }
+
+
+
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         holder.bind(data[position], itemSelectionStates[position].isSelected)
     }
@@ -33,8 +45,8 @@ class RecyclerViewAdapterMenu(val data: List<MenuItem>) :
         updateSelectionActionButtonVisibility()
     }
 
-    fun getSelectedItems(): List<MenuItem> {
-        val selectedItems = mutableListOf<MenuItem>()
+    fun getSelectedItems(): List<MenuItems> {
+        val selectedItems = mutableListOf<MenuItems>()
         for (i in data.indices) {
             if (itemSelectionStates[i].isSelected) {
                 selectedItems.add(data[i])
@@ -53,6 +65,7 @@ class RecyclerViewAdapterMenu(val data: List<MenuItem>) :
     }
 
     private fun updateSelectionActionButtonVisibility() {
+        println("test"+ getSelectedItems().isEmpty().toString())
         if (getSelectedItems().isEmpty()) {
             selectionActionButton.visibility = View.GONE
         } else {
@@ -66,7 +79,8 @@ class RecyclerViewAdapterMenu(val data: List<MenuItem>) :
         private val description = view.findViewById<TextView>(R.id.item_men_des)
         private val price = view.findViewById<TextView>(R.id.item_price)
 
-        fun bind(item: MenuItem, isSelected: Boolean) {
+        @SuppressLint("SetTextI18n")
+        fun bind(item: MenuItems, isSelected: Boolean) {
             name.text = item.name
             description.text = item.description
             price.text = "${item.price} DA"
@@ -84,7 +98,7 @@ class RecyclerViewAdapterMenu(val data: List<MenuItem>) :
     }
 
     interface OnItemSelectedListener {
-        fun onItemSelected(selectedItems: List<MenuItem>)
+        fun onItemSelected(selectedItems: List<MenuItems>)
     }
 
     private class ItemSelectionState(var isSelected: Boolean = false)

@@ -10,6 +10,7 @@ import androidx.core.content.edit
 import androidx.lifecycle.ViewModelProvider
 import androidx.room.Room
 import com.bumptech.glide.Glide
+import com.example.deliveryapplication.model.retrofit.MenuItemAPI
 import com.example.deliveryapplication.model.retrofit.RestaurantAPI
 import com.example.deliveryapplication.model.retrofit.RetrofitObject
 import com.example.deliveryapplication.model.room.AppDatabase
@@ -30,19 +31,6 @@ class MainActivity : AppCompatActivity() {
         val pref = getSharedPreferences("Connect", Context.MODE_PRIVATE) ?: return
         pref.edit {
             putBoolean("connected", true)
-        }
-
-        val viewModelScope = CoroutineScope(Dispatchers.Main)
-
-        viewModelScope.launch(Dispatchers.IO) {
-            val restaurantAPI = RetrofitObject.getInstance().create(RestaurantAPI::class.java)
-            // launching a new coroutine
-            GlobalScope.launch {
-                val result = restaurantAPI.getRestaurants()
-                if (result != null)
-                // Checking the results
-                    println("ayush: " + result.body().toString())
-            }
         }
 
 

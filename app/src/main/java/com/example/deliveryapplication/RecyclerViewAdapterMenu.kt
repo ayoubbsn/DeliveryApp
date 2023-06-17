@@ -45,7 +45,7 @@ class RecyclerViewAdapterMenu(var data: List<MenuItems>) :
         updateSelectionActionButtonVisibility()
     }
 
-    fun getSelectedItems(): List<MenuItems> {
+    fun getSelectedItems(): MutableList<MenuItems> {
         val selectedItems = mutableListOf<MenuItems>()
         for (i in data.indices) {
             if (itemSelectionStates[i].isSelected) {
@@ -65,7 +65,6 @@ class RecyclerViewAdapterMenu(var data: List<MenuItems>) :
     }
 
     private fun updateSelectionActionButtonVisibility() {
-        println("test"+ getSelectedItems().isEmpty().toString())
         if (getSelectedItems().isEmpty()) {
             selectionActionButton.visibility = View.GONE
         } else {

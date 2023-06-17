@@ -28,5 +28,14 @@
         android:id="@+id/menuFragment"
         android:name="com.example.deliveryapplication.menuFragment"
         android:label="fragment_menu"
-        tools:layout="@layout/fragment_menu" />
+        tools:layout="@layout/fragment_menu" >
+        <action
+            android:id="@+id/action_menuFragment_to_orderProcessFragment"
+            app:destination="@id/orderProcessFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/orderProcessFragment"
+        android:name="com.example.deliveryapplication.orderProcessFragment"
+        android:label="fragment_order_process"
+        tools:layout="@layout/fragment_order_process" />
 </navigation>

@@ -38,6 +38,27 @@
                             <option name="y" value="427" />
                           </Point>
                         </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_menuFragment_to_orderProcessFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="orderProcessFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="334" />
+                            <option name="y" value="427" />
+                          </Point>
+                        </option>
                       </LayoutPositions>
                     </value>
                   </entry>
@@ -46,8 +67,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="118" />
-                            <option name="y" value="59" />
+                            <option name="x" value="146" />
+                            <option name="y" value="37" />
                           </Point>
                         </option>
                       </LayoutPositions>
@@ -58,8 +79,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="291" />
-                            <option name="y" value="56" />
+                            <option name="x" value="371" />
+                            <option name="y" value="52" />
                           </Point>
                         </option>
                       </LayoutPositions>

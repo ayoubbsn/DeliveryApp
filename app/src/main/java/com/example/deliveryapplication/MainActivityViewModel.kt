@@ -21,6 +21,8 @@ class MainActivityViewModel : ViewModel() {
     val menuItemsLiveData = MutableLiveData<List<MenuItems>>()
     val oneRestaurantLiveData: MutableLiveData<Restaurants?> = MutableLiveData()
 
+    val selectedItems = MutableLiveData<List<MenuItems>>()
+
 
     fun fetchRestItemsData(id: Int) {
         viewModelScope.launch(Dispatchers.IO) {

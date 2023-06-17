@@ -5,6 +5,9 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.Room
+import com.example.deliveryapplication.model.room.entity.Card
+import com.example.deliveryapplication.model.room.entity.MenuCard
+import com.example.deliveryapplication.model.room.entity.MenuData
 
 @Database(entities = [Card::class, MenuData::class, MenuCard::class], version = 2)
 abstract class AppDatabase : RoomDatabase() {

@@ -15,14 +15,14 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.deliveryapplication.model.room.AppDatabase
-import com.example.deliveryapplication.model.room.Card
-import com.example.deliveryapplication.model.room.MenuCard
+import com.example.deliveryapplication.model.room.entity.Card
+import com.example.deliveryapplication.model.room.entity.MenuCard
 import java.time.LocalDate
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.deliveryapplication.model.retrofit.RetrofitObject
 import com.example.deliveryapplication.model.retrofit.entity.MenuItems
-
 
 
 class menuFragment : Fragment() {
@@ -38,7 +38,7 @@ class menuFragment : Fragment() {
     ): View? {
 
         //view model init
-        viewModel = ViewModelProvider(this).get(MainActivityViewModel::class.java)
+        viewModel = ViewModelProvider(requireActivity()).get(MainActivityViewModel::class.java)
 
         val rootView = inflater.inflate(R.layout.fragment_menu, container, false)
 
@@ -74,19 +74,20 @@ class menuFragment : Fragment() {
         toolbar.setNavigationOnClickListener {
             activity?.onBackPressed()
         }
-
+        //restaurant information initialization
         restInfoInit(view)
 
         selectionActionButton = view.findViewById(R.id.button)
         selectionActionButton.setOnClickListener {
             val pref = context?.getSharedPreferences("Connect", Context.MODE_PRIVATE)
             val connected = pref?.getBoolean("connected", false)
-
             if (connected == true) {
-                val selectedItems = menuAdapter.getSelectedItems()
-                // Do something with the selected items
+                val selectedItemsList = menuAdapter.getSelectedItems()
+                viewModel.selectedItems.value = selectedItemsList
+                findNavController().navigate(R.id.action_menuFragment_to_orderProcessFragment)
             }
         }
+
 
         menuAdapter.setSelectionActionButton(selectionActionButton)
         menuAdapter.setOnItemSelectedListener(object :
@@ -102,7 +103,7 @@ class menuFragment : Fragment() {
                     listToBeInsterted.add(MenuCard(item.id.toLong(), 1))
                 }
                 //appDatabase?.menuCardDao()?.addMenuDataCardItems()
-                println(listToBeInsterted)
+                println("menu frag"+listToBeInsterted)
 
             }
         })
@@ -112,9 +113,9 @@ class menuFragment : Fragment() {
     fun restInfoInit(view: View) {
         val image = view.findViewById<ImageView>(R.id.restPic)
         viewModel.oneRestaurantLiveData.observe(viewLifecycleOwner, Observer { restaurant ->
-            if (restaurant != null){
+            if (restaurant != null) {
                 Glide.with(view)
-                    .load( RetrofitObject.baseUrl+restaurant.logo)
+                    .load(RetrofitObject.baseUrl + restaurant.logo)
                     .into(image)
                 val name = view.findViewById(R.id.nameRes) as TextView
                 val description = view.findViewById(R.id.descRes) as TextView

@@ -1,6 +1,7 @@
 package com.example.deliveryapplication.model.room
 
 import androidx.room.*
+import com.example.deliveryapplication.model.room.entity.Card
 
 @Dao
 interface CardDao {

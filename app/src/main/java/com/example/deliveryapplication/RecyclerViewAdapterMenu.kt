@@ -7,9 +7,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.deliveryapplication.model.entity.MenuItem
 import com.example.deliveryapplication.model.retrofit.entity.MenuItems
-import com.example.deliveryapplication.model.retrofit.entity.Restaurants
 
 
 class RecyclerViewAdapterMenu(var data: List<MenuItems>) :

@@ -5,15 +5,15 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.Room
-import com.example.deliveryapplication.model.room.entity.Card
-import com.example.deliveryapplication.model.room.entity.MenuCard
-import com.example.deliveryapplication.model.room.entity.MenuData
+import androidx.room.TypeConverters
+import com.example.deliveryapplication.model.room.entity.CardItemL
+import com.example.deliveryapplication.model.room.entity.MenuItemL
 
-@Database(entities = [Card::class, MenuData::class, MenuCard::class], version = 2)
+@Database(entities = [CardItemL::class, MenuItemL::class], version = 8)
+@TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun cardDao() : CardDao
-    abstract fun menuCardDao() : MenuCardDao
-    abstract fun menuDataDao() : MenuDataDao
+    abstract fun cardDao() : LocalCardDao
+   abstract fun menuItemDao() : MenuItemDao
 
     companion object {
         private var INSTANCE: AppDatabase? = null

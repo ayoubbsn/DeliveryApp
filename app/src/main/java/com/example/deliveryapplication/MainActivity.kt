@@ -7,13 +7,11 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import android.content.Context
 import androidx.core.content.edit
-import androidx.lifecycle.ViewModelProvider
 import androidx.room.Room
-import com.bumptech.glide.Glide
-import com.example.deliveryapplication.model.retrofit.MenuItemAPI
-import com.example.deliveryapplication.model.retrofit.RestaurantAPI
-import com.example.deliveryapplication.model.retrofit.RetrofitObject
+
 import com.example.deliveryapplication.model.room.AppDatabase
+import com.example.deliveryapplication.model.room.LocalCardDao
+import com.example.deliveryapplication.model.room.MenuItemDao
 import kotlinx.coroutines.*
 
 
@@ -32,6 +30,8 @@ class MainActivity : AppCompatActivity() {
         pref.edit {
             putBoolean("connected", true)
         }
+
+
 
 
     }

@@ -29,7 +29,8 @@ class RecyclerViewOrderPAdapter(
             listener.onTotalPriceChange(getTotalPrice())
 
             increaseButton.setOnClickListener {
-                val position = adapterPosition.takeIf { it != RecyclerView.NO_POSITION } ?: return@setOnClickListener
+                val position = adapterPosition.takeIf { it != RecyclerView.NO_POSITION }
+                    ?: return@setOnClickListener
                 items[position].apply {
                     quantity++
                     itemQuantity.text = quantity.toString()
@@ -39,7 +40,8 @@ class RecyclerViewOrderPAdapter(
             }
 
             decreaseButton.setOnClickListener {
-                val position = adapterPosition.takeIf { it != RecyclerView.NO_POSITION } ?: return@setOnClickListener
+                val position = adapterPosition.takeIf { it != RecyclerView.NO_POSITION }
+                    ?: return@setOnClickListener
                 items[position].apply {
                     if (quantity > 1) {
                         quantity--
@@ -112,16 +114,20 @@ class RecyclerViewOrderPAdapter(
 
     override fun getItemCount() = items.size
 
+    fun getItems(): MutableList<CardItem> {
+        return this.items
+    }
+
+
     private fun formatPrice(price: Int) = "$price DA"
 
-    private fun getTotalPrice(): Int {
+    fun getTotalPrice(): Int {
         var totalPrice = 0
         for (item in items) {
             totalPrice += item.quantity * item.price
         }
         return totalPrice
     }
-
 
     interface OnTotalPriceChangeListener {
         fun onTotalPriceChange(totalPrice: Int)

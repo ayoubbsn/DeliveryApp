@@ -14,15 +14,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.deliveryapplication.model.room.AppDatabase
-import com.example.deliveryapplication.model.room.entity.Card
-import com.example.deliveryapplication.model.room.entity.MenuCard
-import java.time.LocalDate
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.deliveryapplication.model.retrofit.RetrofitObject
-import com.example.deliveryapplication.model.retrofit.entity.MenuItems
 
 
 class menuFragment : Fragment() {
@@ -31,7 +26,7 @@ class menuFragment : Fragment() {
     private lateinit var selectionActionButton: Button
     private lateinit var menuAdapter: RecyclerViewAdapterMenu
     private var restaurantId = 0
-
+    private var restNameSend = ""
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -84,29 +79,15 @@ class menuFragment : Fragment() {
             if (connected == true) {
                 val selectedItemsList = menuAdapter.getSelectedItems()
                 viewModel.selectedItems.value = selectedItemsList
-                findNavController().navigate(R.id.action_menuFragment_to_orderProcessFragment)
+                val bundle = Bundle()
+                bundle.putInt("restaurantId",restaurantId)
+                bundle.putString("restaurantName",restNameSend)
+                findNavController().navigate(R.id.action_menuFragment_to_orderProcessFragment,bundle)
             }
         }
 
 
         menuAdapter.setSelectionActionButton(selectionActionButton)
-        menuAdapter.setOnItemSelectedListener(object :
-            RecyclerViewAdapterMenu.OnItemSelectedListener {
-            override fun onItemSelected(selectedItems: List<MenuItems>) {
-                val currentDate = LocalDate.now().toString()
-                val appDatabase = AppDatabase.buildDatabase(requireActivity())
-                val cardDao = appDatabase?.cardDao()
-                val seqId = cardDao?.getLastSeqId()?.plus(1) ?: 0L
-                cardDao?.addCards(Card(seqId, currentDate))
-                val listToBeInsterted = mutableListOf<MenuCard>()
-                for (item in selectedItems) {
-                    listToBeInsterted.add(MenuCard(item.id.toLong(), 1))
-                }
-                //appDatabase?.menuCardDao()?.addMenuDataCardItems()
-                println("menu frag"+listToBeInsterted)
-
-            }
-        })
     }
 
 
@@ -121,6 +102,7 @@ class menuFragment : Fragment() {
                 val description = view.findViewById(R.id.descRes) as TextView
                 val cuisineType = view.findViewById(R.id.typeRes) as TextView
 
+                restNameSend = restaurant.name
                 name.text = restaurant.name
                 description.text = restaurant.description
                 cuisineType.text = restaurant.cuisine_type

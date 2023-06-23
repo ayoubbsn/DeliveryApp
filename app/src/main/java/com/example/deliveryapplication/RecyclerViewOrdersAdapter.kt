@@ -60,7 +60,12 @@ class RecyclerViewOrdersAdapter(
         notifyDataSetChanged()
     }
 
+    fun getData(): List<CardItemL> {
+        return this.items
+    }
+
     interface ItemClickListener {
         fun onItemClick(view: View, position: Int)
     }
+
 }

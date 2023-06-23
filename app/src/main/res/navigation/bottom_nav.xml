@@ -18,7 +18,11 @@
         android:id="@+id/ordersFragment"
         android:name="com.example.deliveryapplication.ordersFragment"
         android:label="fragment_orders"
-        tools:layout="@layout/fragment_orders" />
+        tools:layout="@layout/fragment_orders" >
+        <action
+            android:id="@+id/action_ordersFragment_to_orderProcessFragment"
+            app:destination="@id/orderProcessFragment" />
+    </fragment>
     <fragment
         android:id="@+id/profilFragment"
         android:name="com.example.deliveryapplication.profilFragment"

@@ -12,6 +12,9 @@ interface MenuItemDao {
     @Query("select * from MenuDataItems")
     fun getMenuDataItemsAll(): List<MenuItemL>
 
+    @Query("SELECT * FROM MenuDataItems WHERE cardId = :id_card")
+    fun getMenuItemByCard(id_card: Int): List<MenuItemL>
+
     @Insert
     fun addMenuDataItems(vararg menuItemLItems: MenuItemL)
 
@@ -20,4 +23,7 @@ interface MenuItemDao {
 
     @Delete
     fun deleteMenuDataItem(menuItemLItem: MenuItemL)
+
+    @Query("DELETE FROM MenuDataItems WHERE cardId=:id_card")
+    fun deleteMenuItemById(id_card: Int)
 }

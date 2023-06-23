@@ -17,6 +17,7 @@ import com.example.deliveryapplication.model.retrofit.entity.Restaurants
 import com.example.deliveryapplication.model.room.AppDatabase
 import com.example.deliveryapplication.model.room.LocalCardDao
 import com.example.deliveryapplication.model.room.entity.CardItemL
+import com.example.deliveryapplication.model.room.entity.MenuItemL
 import kotlinx.coroutines.*
 
 class MainActivityViewModel : ViewModel() {
@@ -27,7 +28,9 @@ class MainActivityViewModel : ViewModel() {
     val restaurantsLiveData = MutableLiveData<List<Restaurants>>()
     val menuItemsLiveData = MutableLiveData<List<MenuItems>>()
     val oneRestaurantLiveData: MutableLiveData<Restaurants?> = MutableLiveData()
+
     val cardsLiveData = MutableLiveData<List<CardItemL>>()
+    val menuItemsLLiveData = MutableLiveData<List<MenuItemL>>()
 
     val selectedItems = MutableLiveData<List<MenuItems>>()
 
@@ -71,6 +74,38 @@ class MainActivityViewModel : ViewModel() {
 
             val cardAPI = appDB.cardDao()
             cardsLiveData.postValue(cardAPI.getAllCards())
+        }
+    }
+
+    fun fetchMenuItemsL(idCard: Int, context: Context){
+        viewModelScope.launch(Dispatchers.IO) {
+            val appDB = Room.databaseBuilder(
+                context,
+                AppDatabase::class.java,
+                "AppDB"
+            )
+                .fallbackToDestructiveMigration()
+                .build()
+
+            val menuItemLAPI = appDB.menuItemDao()
+            menuItemsLLiveData.postValue(menuItemLAPI.getMenuItemByCard(idCard))
+        }
+    }
+
+    fun deleteCard(idCard: Int , context: Context) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val appDB = Room.databaseBuilder(
+                context,
+                AppDatabase::class.java,
+                "AppDB"
+            )
+                .fallbackToDestructiveMigration()
+                .build()
+
+            val menuItemLAPI = appDB.menuItemDao()
+            val cardAPI = appDB.cardDao()
+            cardAPI.deleteCardById(idCard)
+            menuItemLAPI.deleteMenuItemById(idCard)
         }
     }
 

@@ -8,11 +8,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 
-class ordersFragment : Fragment() {
+class ordersFragment : Fragment() , RecyclerViewOrdersAdapter.ItemClickListener {
 
     private lateinit var orderAdapter : RecyclerViewOrdersAdapter
     private lateinit var viewModel: MainActivityViewModel
@@ -32,10 +33,10 @@ class ordersFragment : Fragment() {
 
         recyclerView.layoutManager  = LinearLayoutManager(activity)
         orderAdapter = RecyclerViewOrdersAdapter(emptyList())
+        orderAdapter.setClickListener(this)
         recyclerView.adapter = orderAdapter
 
         viewModel.cardsLiveData.observe(viewLifecycleOwner , Observer { cards ->
-            println("from obs $cards")
             orderAdapter.updateData(cards)
         })
 
@@ -50,8 +51,16 @@ class ordersFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+    }
 
+    override fun onItemClick(view: View, position: Int) {
+        val data = orderAdapter.getData()
+        val bundle = Bundle()
+        bundle.putInt("fragment",2)
+        bundle.putInt("cardId",data[position].id)
+        bundle.putString("restaurantName",data[position].restaurantName)
 
+        findNavController().navigate(R.id.action_ordersFragment_to_orderProcessFragment,bundle)
     }
 
 

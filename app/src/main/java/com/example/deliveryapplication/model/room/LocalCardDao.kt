@@ -22,5 +22,8 @@ interface LocalCardDao {
     @Delete
     fun deleteCard(Card: CardItemL)
 
+    @Query("DELETE FROM cards WHERE id=:id_card ")
+    fun deleteCardById(id_card: Int)
+
 
 }

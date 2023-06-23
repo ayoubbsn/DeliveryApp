@@ -81,6 +81,7 @@ class menuFragment : Fragment() {
                 viewModel.selectedItems.value = selectedItemsList
                 val bundle = Bundle()
                 bundle.putInt("restaurantId",restaurantId)
+                bundle.putInt("fragment",1)
                 bundle.putString("restaurantName",restNameSend)
                 findNavController().navigate(R.id.action_menuFragment_to_orderProcessFragment,bundle)
             }

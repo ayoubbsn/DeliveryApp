@@ -1,32 +1,24 @@
 package com.example.deliveryapplication
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.TextView
+import android.widget.Toast
+import androidx.cardview.widget.CardView
+import androidx.core.content.edit
+import kotlin.math.log
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [profilFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class profilFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+
     }
 
     override fun onCreateView(
@@ -34,26 +26,48 @@ class profilFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_profil, container, false)
-    }
+        val rootView = inflater.inflate(R.layout.fragment_profil, container, false)
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment profilFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            profilFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+        inserTrue(context)
+        val pref = context?.getSharedPreferences("appPrefs", Context.MODE_PRIVATE)
+        var res: Boolean = pref?.getBoolean("connected", false) as Boolean
+
+        val logOut = rootView.findViewById<CardView>(R.id.logoutCard)
+
+        if (!res) updateView(rootView, "log In") else updateView(rootView, "log out")
+
+        logOut.setOnClickListener {
+            res = pref.getBoolean("connected", false)
+            if (res) {
+                pref.edit {
+                    putBoolean("connected", false)
+                    //delete the token
+                    updateView(rootView, "Log In")
+                    Toast.makeText(context, "Logged out", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                logOut.setOnClickListener {
+                    val intent  = Intent(activity , LoginActivity::class.java)
+                    startActivity(intent)
                 }
             }
+        }
+
+
+        return rootView
+    }
+
+    fun updateView(view: View, text: String) {
+        val logText = view.findViewById<TextView>(R.id.logText)
+        logText.text = text
+    }
+
+    fun inserTrue(context: Context?) {
+        val pref = context?.getSharedPreferences("appPrefs", Context.MODE_PRIVATE) ?: return
+        pref.edit {
+            putBoolean("connected", true)
+            apply()
+        }
+
     }
 }

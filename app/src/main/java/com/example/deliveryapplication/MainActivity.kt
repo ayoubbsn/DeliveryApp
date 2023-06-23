@@ -7,12 +7,6 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import android.content.Context
 import androidx.core.content.edit
-import androidx.room.Room
-
-import com.example.deliveryapplication.model.room.AppDatabase
-import com.example.deliveryapplication.model.room.LocalCardDao
-import com.example.deliveryapplication.model.room.MenuItemDao
-import kotlinx.coroutines.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -26,9 +20,10 @@ class MainActivity : AppCompatActivity() {
         val navController_ = navHostFragment_.navController
         bottomNavigationView.setupWithNavController(navController_)
 
-        val pref = getSharedPreferences("Connect", Context.MODE_PRIVATE) ?: return
+        val pref = getSharedPreferences("Connected", Context.MODE_PRIVATE) ?: return
         pref.edit {
             putBoolean("connected", true)
+            commit()
         }
 
 

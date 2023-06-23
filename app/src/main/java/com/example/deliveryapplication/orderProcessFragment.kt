@@ -1,5 +1,6 @@
 package com.example.deliveryapplication
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -31,8 +32,11 @@ class orderProcessFragment : Fragment(), RecyclerViewOrderPAdapter.OnTotalPriceC
     private val itemList = mutableListOf<CardItem>()
     private var restaurantIdIns = 0
     private var restaurantName = ""
+    private var prevFrag = 0
+    private var cardId = 0
 
 
+    @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -54,59 +58,49 @@ class orderProcessFragment : Fragment(), RecyclerViewOrderPAdapter.OnTotalPriceC
         recyclerView.layoutManager = mLayoutManager
         recyclerView.adapter = orderAdapter
 
-        viewModel = ViewModelProvider(requireActivity()).get(MainActivityViewModel::class.java)
-        viewModel.selectedItems.observe(viewLifecycleOwner) { selectedItems ->
-            itemList.clear()
-            itemList.addAll(selectedItems.map { CardItem(it.id, it.name, it.price) })
-            orderAdapter.notifyDataSetChanged()
-        }
-
-        //getting the current Restaurant ID
+        //bundle init
         restaurantIdIns = arguments?.getInt("restaurantId") ?: 0
         restaurantName = arguments?.getString("restaurantName") ?: ""
+        prevFrag = arguments?.getInt("fragment") ?: 0
+        cardId = arguments?.getInt("cardId") ?: 0
+
+        //view model init
+        viewModel = ViewModelProvider(requireActivity()).get(MainActivityViewModel::class.java)
+
+        //recycler view items init
+        if (prevFrag == 1) {
+            viewModel.selectedItems.observe(viewLifecycleOwner) { selectedItems ->
+                itemList.clear()
+                itemList.addAll(selectedItems.map { CardItem(it.id, it.name, it.price) })
+                orderAdapter.notifyDataSetChanged()
+            }
+        } else if (prevFrag == 2) {
+            viewModel.fetchMenuItemsL(cardId,context as Context )
+            viewModel.menuItemsLLiveData.observe(viewLifecycleOwner) { menuItemsL ->
+                itemList.clear()
+                itemList.addAll(menuItemsL.map {
+                    CardItem(
+                        it.id,
+                        it.name,
+                        it.price,
+                        it.quantity,
+                        it.notes
+                    )
+                })
+                orderAdapter.notifyDataSetChanged()
+            }
+        }
+
 
 
         val saveButton: Button = rootView.findViewById(R.id.saveButton)
+        if (prevFrag == 2) saveButton.text = "Update"
         saveButton.setOnClickListener {
-            val date = Date()
-            val data = orderAdapter.getItems()
-            lifecycleScope.launch(Dispatchers.IO) {
-                val appDB = Room.databaseBuilder(
-                    context?.applicationContext as Context,
-                    AppDatabase::class.java,
-                    "AppDB"
-                )
-                    .fallbackToDestructiveMigration()
-                    .build()
-
-                val cardDao = appDB.cardDao()
-                cardDao.addCards(
-                    CardItemL(
-                        date = date,
-                        restaurantId = restaurantIdIns,
-                        restaurantName = restaurantName,
-                        totalPrice = orderAdapter.getTotalPrice()
-                    )
-                )
-                val menuItemDao = appDB.menuItemDao()
-                for (item in data) {
-                        menuItemDao.addMenuDataItems(
-                            MenuItemL(
-                                item.id,
-                                cardDao.getLastSeqId(),
-                                restaurantIdIns,
-                                item.name,
-                                item.price,
-                                item.quantity,
-                                item.notes
-                            )
-                        )
-
-                }
-
+            if (prevFrag == 1) handleInsert()
+            else if (prevFrag == 2) {
+                deleteCard(cardId)
+                handleInsert()
             }
-
-
         }
 
         return rootView
@@ -130,4 +124,47 @@ class orderProcessFragment : Fragment(), RecyclerViewOrderPAdapter.OnTotalPriceC
 
 
     }
+
+    fun handleInsert() {
+        val date = Date()
+        val data = orderAdapter.getItems()
+        lifecycleScope.launch(Dispatchers.IO) {
+            val appDB = Room.databaseBuilder(
+                context?.applicationContext as Context,
+                AppDatabase::class.java,
+                "AppDB"
+            )
+                .fallbackToDestructiveMigration()
+                .build()
+
+            val cardDao = appDB.cardDao()
+            cardDao.addCards(
+                CardItemL(
+                    date = date,
+                    restaurantId = restaurantIdIns,
+                    restaurantName = restaurantName,
+                    totalPrice = orderAdapter.getTotalPrice()
+                )
+            )
+            val menuItemDao = appDB.menuItemDao()
+            for (item in data) {
+                menuItemDao.addMenuDataItems(
+                    MenuItemL(
+                        item.id,
+                        cardDao.getLastSeqId(),
+                        restaurantIdIns,
+                        item.name,
+                        item.price,
+                        item.quantity,
+                        item.notes
+                    )
+                )
+            }
+        }
+    }
+
+    fun deleteCard(idCard: Int) {
+        viewModel.deleteCard(idCard, context?.applicationContext as Context)
+    }
+
 }

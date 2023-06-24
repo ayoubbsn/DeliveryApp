@@ -3,28 +3,29 @@ package com.example.deliveryapplication
 
 import android.app.Application
 import android.content.Context
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import androidx.room.Room
+import com.example.deliveryapplication.model.retrofit.*
 
-import com.example.deliveryapplication.model.retrofit.MenuItemAPI
-import com.example.deliveryapplication.model.retrofit.RestaurantAPI
-import com.example.deliveryapplication.model.retrofit.RetrofitObject
 import com.example.deliveryapplication.model.retrofit.entity.MenuItems
+import com.example.deliveryapplication.model.retrofit.entity.Rating
 import com.example.deliveryapplication.model.retrofit.entity.Restaurants
+import com.example.deliveryapplication.model.retrofit.entity.User
 import com.example.deliveryapplication.model.room.AppDatabase
 import com.example.deliveryapplication.model.room.LocalCardDao
 import com.example.deliveryapplication.model.room.entity.CardItemL
 import com.example.deliveryapplication.model.room.entity.MenuItemL
 import kotlinx.coroutines.*
+import retrofit2.create
 
 class MainActivityViewModel : ViewModel() {
 
 
     private val restaurantAPI = RetrofitObject.getInstance().create(RestaurantAPI::class.java)
     private val menuItemAPI = RetrofitObject.getInstance().create(MenuItemAPI::class.java)
+    private val userAPI = RetrofitObject.getInstance().create(UserAPI::class.java)
+    private val ratingAPI  = RetrofitObject.getInstance().create(RatingAPI::class.java)
+
     val restaurantsLiveData = MutableLiveData<List<Restaurants>>()
     val menuItemsLiveData = MutableLiveData<List<MenuItems>>()
     val oneRestaurantLiveData: MutableLiveData<Restaurants?> = MutableLiveData()
@@ -32,7 +33,10 @@ class MainActivityViewModel : ViewModel() {
     val cardsLiveData = MutableLiveData<List<CardItemL>>()
     val menuItemsLLiveData = MutableLiveData<List<MenuItemL>>()
 
+
     val selectedItems = MutableLiveData<List<MenuItems>>()
+
+    var userLiveData = MutableLiveData<User>()
 
 
     fun fetchRestItemsData(id: Int) {
@@ -59,6 +63,26 @@ class MainActivityViewModel : ViewModel() {
                 oneRestaurantLiveData.postValue(response.body())
             }
         }
+    }
+
+    fun getUser(id :Int){
+        viewModelScope.launch(Dispatchers.IO) {
+            val response = userAPI.getUserById(id)
+            if (response.isSuccessful && response.body() != null) {
+                userLiveData.postValue(response.body())
+            }
+        }
+    }
+
+    fun fetchRatingsForRestaurant(id_restaurant: Int): LiveData<List<Rating>> {
+        val ratingsLiveData = MutableLiveData<List<Rating>>()
+        viewModelScope.launch(Dispatchers.IO) {
+            val response = ratingAPI.getRatingsOfRestaurant(id_restaurant)
+            if (response.isSuccessful && response.body() != null) {
+                ratingsLiveData.postValue(response.body())
+            }
+        }
+        return ratingsLiveData
     }
 
 

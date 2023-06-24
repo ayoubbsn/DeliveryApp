@@ -56,6 +56,24 @@ class menuFragment : Fragment() {
         restaurantId = arguments?.getInt("restaurantId") ?: 0
         viewModel.fetchRestItemsData(restaurantId)
 
+        var sum = 0
+        var size = 0
+        viewModel.fetchRatingsForRestaurant(restaurantId).observe(viewLifecycleOwner, Observer { it ->
+            size = it.size
+            for (item in it){
+                sum += item.rating
+            }
+
+            // move the UI updates into the observer
+            val review = rootView.findViewById<TextView>(R.id.reviewsRd)
+            if (size != 0) {
+                val avg = sum.toDouble() / size
+                val formattedNumber = String.format("%.2f", avg)
+                review.text = "Reviews $formattedNumber  ($size) "
+            } else {
+                review.text = "Reviews N/A  (0) "
+            }
+        })
         return rootView
     }
 
@@ -74,21 +92,17 @@ class menuFragment : Fragment() {
 
         selectionActionButton = view.findViewById(R.id.button)
         selectionActionButton.setOnClickListener {
-            val pref = context?.getSharedPreferences("Connect", Context.MODE_PRIVATE)
-            val connected = pref?.getBoolean("connected", false)
-            if (connected == true) {
-                val selectedItemsList = menuAdapter.getSelectedItems()
-                viewModel.selectedItems.value = selectedItemsList
-                val bundle = Bundle()
-                bundle.putInt("restaurantId",restaurantId)
-                bundle.putInt("fragment",1)
-                bundle.putString("restaurantName",restNameSend)
-                findNavController().navigate(R.id.action_menuFragment_to_orderProcessFragment,bundle)
-            }
+            val selectedItemsList = menuAdapter.getSelectedItems()
+            viewModel.selectedItems.value = selectedItemsList
+            val bundle = Bundle()
+            bundle.putInt("restaurantId", restaurantId)
+            bundle.putInt("fragment", 1)
+            bundle.putString("restaurantName", restNameSend)
+            findNavController().navigate(R.id.action_menuFragment_to_orderProcessFragment, bundle)
         }
-
-
         menuAdapter.setSelectionActionButton(selectionActionButton)
+
+
     }
 
 

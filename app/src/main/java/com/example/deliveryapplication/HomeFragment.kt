@@ -30,7 +30,7 @@ class HomeFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(activity)
 
         // Initialize adapter
-        adapter = RecyclerViewHomeAdapter(emptyList())
+        adapter = RecyclerViewHomeAdapter(emptyList(),viewModel)
         recyclerView.adapter = adapter
 
         // Fetch restaurants

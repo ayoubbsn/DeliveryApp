@@ -68,6 +68,7 @@ class loginFragment : Fragment() {
                     ) {
                         if (response.isSuccessful) {
                             val token = response.body()?.token
+                            val id = response.body()?.id
                             val sharedPreferences = context?.getSharedPreferences("appPrefs", Context.MODE_PRIVATE)
                             sharedPreferences?.edit {
                                 putBoolean("connected", true)
@@ -75,6 +76,7 @@ class loginFragment : Fragment() {
                                 apply()
                             }
                             val intent = Intent(activity, MainActivity::class.java)
+                            intent.putExtra("idUser",id)
                             startActivity(intent)
                         } else {
                             Toast.makeText(activity, "Invalid email or password", Toast.LENGTH_SHORT).show()

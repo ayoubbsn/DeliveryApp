@@ -6,12 +6,16 @@ import retrofit2.http.POST
 interface AuthService {
 
     data class RegisterRequest(
+        val name: String,
         val email: String,
+        val phone_number:String,
+        val address: String,
         val password: String
     )
 
     data class RegisterResponse(
-        val token: String
+        val token: String,
+        val id: Int
     )
 
     @POST("/auth/register")
@@ -23,7 +27,8 @@ interface AuthService {
     )
 
     data class LoginResponse(
-        val token: String
+        val token: String,
+        val id:Int
     )
 
     @POST("/auth/login")

@@ -60,15 +60,14 @@
 
                 <TextView
                     android:id="@+id/nameRes"
-                    android:layout_width="0dp"
+                    android:layout_width="250dp"
                     android:layout_height="33dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="8dp"
-                    android:text="Name"
-                    android:textSize="26sp"
-                    android:textColor="@color/black"
                     android:fontFamily="@font/poppins_semibold"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    android:text="Name"
+                    android:textColor="@color/black"
+                    android:textSize="26sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/cardView" />
 
@@ -90,12 +89,25 @@
                     android:id="@+id/typeRes"
                     android:layout_width="110dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="8dp"
                     android:width="30dp"
-                    android:text="Cuisine type "
-                    android:textSize="16sp"
-                    android:textColor="@color/black"
                     android:fontFamily="@font/poppins_regular"
+                    android:text="Cuisine type "
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/nameRes"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/nameRes" />
+
+                <TextView
+                    android:id="@+id/reviewsRd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="Reviews"
+                    android:textSize="16sp"
+                    android:fontFamily="@font/poppins_regular"
+                    android:textColor="@color/main_color"
                     app:layout_constraintStart_toStartOf="@+id/descRes"
                     app:layout_constraintTop_toBottomOf="@+id/descRes" />
 

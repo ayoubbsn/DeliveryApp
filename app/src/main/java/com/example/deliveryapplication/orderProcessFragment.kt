@@ -11,12 +11,15 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
 import com.example.deliveryapplication.model.entity.CardItem
+import com.example.deliveryapplication.model.retrofit.entity.Order
+import com.example.deliveryapplication.model.retrofit.entity.OrderItem
 import com.example.deliveryapplication.model.room.AppDatabase
 import com.example.deliveryapplication.model.room.entity.CardItemL
 import com.example.deliveryapplication.model.room.entity.MenuItemL
@@ -75,7 +78,7 @@ class orderProcessFragment : Fragment(), RecyclerViewOrderPAdapter.OnTotalPriceC
                 orderAdapter.notifyDataSetChanged()
             }
         } else if (prevFrag == 2) {
-            viewModel.fetchMenuItemsL(cardId,context as Context )
+            viewModel.fetchMenuItemsL(cardId, context as Context)
             viewModel.menuItemsLLiveData.observe(viewLifecycleOwner) { menuItemsL ->
                 itemList.clear()
                 itemList.addAll(menuItemsL.map {
@@ -90,7 +93,6 @@ class orderProcessFragment : Fragment(), RecyclerViewOrderPAdapter.OnTotalPriceC
                 orderAdapter.notifyDataSetChanged()
             }
         }
-
 
 
         val saveButton: Button = rootView.findViewById(R.id.saveButton)
@@ -121,9 +123,41 @@ class orderProcessFragment : Fragment(), RecyclerViewOrderPAdapter.OnTotalPriceC
         toolbar.setNavigationOnClickListener {
             activity?.onBackPressed()
         }
+        val validateButton: Button = view.findViewById(R.id.validateButton)
+        validateButton.setOnClickListener {
+            val pref0 = context?.getSharedPreferences("idUser", Context.MODE_PRIVATE)
+            val userId = pref0?.getInt("idUser", 0) ?: 0
+            val order = Order(
+                userId = userId,
+                restaurantId = restaurantIdIns,
+                deliveryAddress = "",
+                deliveryNotes = "",
+                orderStatus = "Pending",
+                createdAt = "",
+                updatedAt = ""
+            )
+
+            viewModel.addOrder(order).observe(viewLifecycleOwner, Observer { orderId ->
+                orderId?.let {
+                    val orderItems = orderAdapter.getItems().map { item ->
+                        OrderItem(
+                            orderId = it,
+                            menuItemId = item.id,
+                            quantity = item.quantity,
+                            specialInstructions = item.notes
+                        )
+                    }
+
+                    for (orderItem in orderItems) {
+                        viewModel.addOrderItem(orderItem)
+                    }
 
 
+                }
+            })
+        }
     }
+
 
     fun handleInsert() {
         val date = Date()

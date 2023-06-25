@@ -85,7 +85,7 @@ class RecyclerViewHomeAdapter(
         viewModel.fetchRatingsForRestaurant(restaurantId).observe(
             holder.itemView.context as LifecycleOwner
         ) { ratings ->
-            reviewsNb.text = " ( ${ratings.size} )"
+            reviewsNb.text = " (${ratings.size})"
             var sum = 0
             for (item in ratings) {
                 sum += item.rating

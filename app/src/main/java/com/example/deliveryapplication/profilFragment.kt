@@ -11,11 +11,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.core.content.edit
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
 
 class profilFragment : Fragment() {
 
@@ -46,7 +43,7 @@ class profilFragment : Fragment() {
         viewModel.userLiveData.observe(viewLifecycleOwner, Observer { user ->
             userNameProfile.text = user.name
         })
-        viewModel.getUser(id)
+        viewModel.getUserById(id)
 
 
         val pref = context?.getSharedPreferences("appPrefs", Context.MODE_PRIVATE)

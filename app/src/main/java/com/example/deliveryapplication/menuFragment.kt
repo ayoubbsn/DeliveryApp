@@ -18,6 +18,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.deliveryapplication.model.retrofit.RetrofitObject
+import org.w3c.dom.Text
 
 
 class menuFragment : Fragment() {
@@ -56,8 +57,11 @@ class menuFragment : Fragment() {
         restaurantId = arguments?.getInt("restaurantId") ?: 0
         viewModel.fetchRestItemsData(restaurantId)
 
+
+
         var sum = 0
         var size = 0
+        val review = rootView.findViewById<TextView>(R.id.reviewsRd)
         viewModel.fetchRatingsForRestaurant(restaurantId).observe(viewLifecycleOwner, Observer { it ->
             size = it.size
             for (item in it){
@@ -65,7 +69,6 @@ class menuFragment : Fragment() {
             }
 
             // move the UI updates into the observer
-            val review = rootView.findViewById<TextView>(R.id.reviewsRd)
             if (size != 0) {
                 val avg = sum.toDouble() / size
                 val formattedNumber = String.format("%.2f", avg)
@@ -74,6 +77,13 @@ class menuFragment : Fragment() {
                 review.text = "Reviews N/A  (0) "
             }
         })
+
+        review.setOnClickListener {
+            val bundle = Bundle()
+            bundle.putInt("restaurantId",restaurantId)
+            findNavController().navigate(R.id.action_menuFragment_to_reviewsFragment,bundle)
+        }
+
         return rootView
     }
 
@@ -87,6 +97,7 @@ class menuFragment : Fragment() {
         toolbar.setNavigationOnClickListener {
             activity?.onBackPressed()
         }
+
         //restaurant information initialization
         restInfoInit(view)
 

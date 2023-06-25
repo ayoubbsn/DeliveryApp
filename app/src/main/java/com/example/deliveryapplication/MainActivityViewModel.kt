@@ -1,22 +1,20 @@
 package com.example.deliveryapplication
 
 
-import android.app.Application
 import android.content.Context
 import androidx.lifecycle.*
 import androidx.room.Room
+import com.example.deliveryapplication.api.OrderApi
 import com.example.deliveryapplication.model.retrofit.*
+import com.example.deliveryapplication.model.retrofit.entity.*
 
-import com.example.deliveryapplication.model.retrofit.entity.MenuItems
-import com.example.deliveryapplication.model.retrofit.entity.Rating
-import com.example.deliveryapplication.model.retrofit.entity.Restaurants
-import com.example.deliveryapplication.model.retrofit.entity.User
 import com.example.deliveryapplication.model.room.AppDatabase
-import com.example.deliveryapplication.model.room.LocalCardDao
 import com.example.deliveryapplication.model.room.entity.CardItemL
 import com.example.deliveryapplication.model.room.entity.MenuItemL
 import kotlinx.coroutines.*
+import retrofit2.Response
 import retrofit2.create
+import java.time.Instant
 
 class MainActivityViewModel : ViewModel() {
 
@@ -24,7 +22,8 @@ class MainActivityViewModel : ViewModel() {
     private val restaurantAPI = RetrofitObject.getInstance().create(RestaurantAPI::class.java)
     private val menuItemAPI = RetrofitObject.getInstance().create(MenuItemAPI::class.java)
     private val userAPI = RetrofitObject.getInstance().create(UserAPI::class.java)
-    private val ratingAPI  = RetrofitObject.getInstance().create(RatingAPI::class.java)
+    private val ratingAPI = RetrofitObject.getInstance().create(RatingAPI::class.java)
+    private val orderApi = RetrofitObject.getInstance().create(OrderApi::class.java)
 
     val restaurantsLiveData = MutableLiveData<List<Restaurants>>()
     val menuItemsLiveData = MutableLiveData<List<MenuItems>>()
@@ -56,6 +55,7 @@ class MainActivityViewModel : ViewModel() {
             }
         }
     }
+
     fun fetchRestaurant(id: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             val response = restaurantAPI.getRestaurantById(id)
@@ -65,7 +65,7 @@ class MainActivityViewModel : ViewModel() {
         }
     }
 
-    fun getUser(id :Int){
+    fun getUserById(id: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             val response = userAPI.getUserById(id)
             if (response.isSuccessful && response.body() != null) {
@@ -85,6 +85,51 @@ class MainActivityViewModel : ViewModel() {
         return ratingsLiveData
     }
 
+    fun submitReview(rating: Int, review: String, idRestaurant: Int, idUser: Int) {
+        val newRating = RatingSend(idUser, idRestaurant ,rating, review, Instant.now().toString())
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val response = ratingAPI.newRating(idUser, idRestaurant, newRating)
+                if (response.isSuccessful) {
+                    println("sent")
+                } else {
+                    println("didn't send")
+                }
+            } catch (e: Exception) {
+                println(e)
+            }
+        }
+    }
+    fun addOrder(order: Order): LiveData<Int?> {
+        val liveData = MutableLiveData<Int?>()
+
+        viewModelScope.launch {
+            val response = orderApi.createOrder(order)
+            if (response.isSuccessful) {
+                liveData.value = response.body()?.id
+                println("order sent")
+            } else {
+                // Optionally handle the error here and post null to liveData
+                liveData.value = null
+            }
+        }
+
+        return liveData
+    }
+
+
+    fun addOrderItem(orderItem: OrderItem) {
+        viewModelScope.launch {
+            val response = orderApi.createOrderItem(orderItem)
+            if (response.isSuccessful) {
+                // handle success case
+            } else {
+                // handle error case
+            }
+        }
+    }
+
+
 
     fun fetchALLCards(context: Context) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -101,7 +146,7 @@ class MainActivityViewModel : ViewModel() {
         }
     }
 
-    fun fetchMenuItemsL(idCard: Int, context: Context){
+    fun fetchMenuItemsL(idCard: Int, context: Context) {
         viewModelScope.launch(Dispatchers.IO) {
             val appDB = Room.databaseBuilder(
                 context,
@@ -116,7 +161,7 @@ class MainActivityViewModel : ViewModel() {
         }
     }
 
-    fun deleteCard(idCard: Int , context: Context) {
+    fun deleteCard(idCard: Int, context: Context) {
         viewModelScope.launch(Dispatchers.IO) {
             val appDB = Room.databaseBuilder(
                 context,

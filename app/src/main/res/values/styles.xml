@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Other theme attributes -->
-        <item name="android:fontFamily">@font/fonts</item>
+
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Color of the line when it is not in focus -->
+        <item name="colorControlNormal">#D1D1D1</item>
+        <!-- Color of the line and hint text when it is in focus -->
+        <item name="colorControlActivated">@color/main_color</item>
+        <!-- Color of the error message and line when there is an error -->
+        <item name="colorError">@color/main_color</item>
     </style>
 
 </resources>

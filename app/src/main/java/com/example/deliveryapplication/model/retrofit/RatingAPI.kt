@@ -1,6 +1,7 @@
 package com.example.deliveryapplication.model.retrofit
 
 import com.example.deliveryapplication.model.retrofit.entity.Rating
+import com.example.deliveryapplication.model.retrofit.entity.RatingSend
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
@@ -18,6 +19,6 @@ interface RatingAPI {
     suspend fun newRating(
         @Path("id_user") id_user: Int,
         @Path("id_restaurant") id_restaurant: Int,
-        @Body rating: Rating
-    ) : Call<Void>
+        @Body rating: RatingSend
+    ) : Response<Void>
 }
